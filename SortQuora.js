@@ -1,3 +1,5 @@
+/* -- FUNCTIONS -- */
+
 var getAnswersDivs = function(classContainer, individualClassContainer) {
     var potentiallyAnswers = $(classContainer);
 
@@ -13,18 +15,29 @@ var getAnswersDivs = function(classContainer, individualClassContainer) {
 };
 
 var getNumberOfUpvotesPerAnswer = function(answersDivs) {
-    var data = []
+
+    var getNumberOfUpvotesFromString = function (text) {
+        if (text.indexOf("k") !== -1) {
+            return 1000 * Number(text.replace("k", ""));
+        } else if (text.indexOf("m") !== -1) {
+            return 1000000 * Number(text.replace("m", ""));
+        } else {
+            return Number(text);
+        }
+    };
+
+    var data = [];
 
     for (var i = 0; i < answersDivs.length; i++) {
         var countDiv = $('#' + answersDivs[i].id).find('.answer_upvote');
 
-        var count = $(countDiv[0].children[1])[0]
+        var count = $(countDiv[0].children[1])[0];
 
-        data.push({ valor: Number($(count).html()), indice: i});
+        data.push({ valor: getNumberOfUpvotesFromString($(count).html()), indice: i});
     }
 
     data.sort(function(a, b) {
-      return b.valor - a.valor;
+        return b.valor - a.valor;
     });
 
     return data;
@@ -38,7 +51,7 @@ var updateQuoraPage = function(data, mainContainerClass, answersDivs) {
     for (var i = 0; i < data.length; i++) {
         mainContainer.append(answersDivs[data[i].indice]);
     }
-}
+};
 
 /* -- MAIN -- */
 
@@ -47,4 +60,8 @@ var answersDivs = getAnswersDivs('.pagedlist_item', '.AnswerBase');
 var data = getNumberOfUpvotesPerAnswer(answersDivs);
 
 updateQuoraPage(data, '.AnswerPagedList', answersDivs);
+
+
+
+
 
